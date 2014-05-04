@@ -1,5 +1,4 @@
 <?php
-
 $projector = new projector(new geoPoint($config['center']['latitude'], $config['center']['longitude']), $config['r']);
 $map = new map($config['size-width'], $config['size-height']);
 
