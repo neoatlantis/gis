@@ -2,6 +2,30 @@
 $pi = 3.141592653589793238462643383279502884197169399375105820974944592307816;
 $toDeg = 180.0 / $pi;
 $toRad = $pi / 180;
+/*
+
+$arrowX = array(394,97,399,100,394,103); 
+$arrowY = array(197,5,200,0,203,5);                
+
+//画曲线 
+for($i=0;$i<380;$i+=0.1){ 
+    $x = $i/20; 
+    $y =sin($x); 
+    $y = 100 + 40*$y; 
+    imagesetpixel($im,$i+10,$y,$red); 
+} 
+
+//画X轴和Y轴 
+imageline($im,0,100,394,100,$white); 
+imageline($im,200,5,200,200,$white); 
+
+//画坐标title 
+imagestring($im,4,350,110,'XShaft',$white); 
+
+//画箭头 
+imagefilledpolygon($im,$arrowX,3,$white); 
+imagefilledpolygon($im,$arrowY,3,$white); 
+*/
 
 class geoPoint{
     public $lat;
@@ -74,7 +98,7 @@ class map{
         $bg = imagecolorallocate($this->im,0,0,0); 
         $this->colors = array(
             'bg'=>$bg,
-            "red"=>imagecolorallocate($this->im,255,0,255), 
+            "red"=>imagecolorallocate($this->im,255,0,0), 
             "white"=>imagecolorallocate($this->im,255,255,255),
             "blue"=>imagecolorallocate($this->im, 0, 0, 255),
         );
@@ -86,7 +110,6 @@ class map{
     }
 
     public function cross($center, $size, $width, $color){
-
         $size = $size / 2;
         $width = $width / 2;
         $cx = $center->x;
@@ -103,5 +126,10 @@ class map{
     public function write($position, $size, $text, $color){
         $position = $this->_coord($position);
         imagestring($this->im, $size, $position['x'], $position['y'], $text, $color);
+    }
+
+    public function dot($position, $size, $color){
+        $position = $this->_coord($position);
+        imagefilledarc($this->im, $position['x'], $position['y'], $size, $size, 0, 360, $size, IMG_ARC_PIE);
     }
 };
