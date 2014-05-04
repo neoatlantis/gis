@@ -7,8 +7,8 @@ foreach($config["elements"] as $element){
     $pos = $geoPoint->project($projector);
 
     if($element['type'] == 'label'){
-        $map->dot($pos, 5, $map->colors['red']);
-        $map->write($pos, $element['size'], $element['text'], $map->colors['white']);
+        $map->dot($pos, $element['size'], $map->colors['red']);
+        $map->write($pos, 4, $element['text'], $map->colors['white']);
     };
 
     if($element['type'] == 'cross'){

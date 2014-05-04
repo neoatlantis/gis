@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-center = (40.0, 119.0)
+center = (35.0, 115.0)
 diff = 5
 
 config = {
@@ -28,14 +28,15 @@ for each in found:
     if len(split) < 10: continue
 
     city_names = split[3].split(',')
-    city_name = city_names[-1]
+    city_name = split[2] 
+#    city_name = city_names[-1]
 
     city_size = split[7]
-    if not city_size in ['PPLA3','PPLA2']: continue
+#    if not city_size in ['PPLA3','PPLA2']: continue
 
     size = 4
-    if city_size == 'PPLA2': 
-        size = 6
+    if city_size != 'PPLA3': 
+        size = 10
 
     elements.append({'type':'label', 'size':size, 'text':city_name, 'latitude':float(split[4]), 'longitude':float(split[5])})
 
