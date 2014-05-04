@@ -1,5 +1,6 @@
 <?php  
 //Header('Content-type: image/png;Charset:utf-8'); //声明图片 
+require('php/plotter.php');
 
 $config = array(
     "size-width"=>800,
@@ -21,58 +22,7 @@ $config = array(
     ),
 );
 
-
 //////////////////////////////////////////////////////////////////////////////
-$pi = 3.141592653589793238462643383279502884197169399375105820974944592307816;
-function project($center, $point){
-    global $config, $pi;
-    $dLong = $point["longitude"] - $config["center"]["longitude"];
-
-    $dX = $dLong / 180.0 * $pi * $config["r"];
-    $dY = $config["r"]
-        * (
-            tan($point["latitude"] / 180 * $pi) 
-            - tan($center["latitude"] / 180 * $pi)
-        )
-    ;
-    return array("dX"=>$dX, "dY"=>$dY);
-};
-
-function toGraphCoordinates($point){
-    global $config;
-    return array(
-        "X"=>$point["X"] + $config["size-width"] / 2,
-        "Y"=>$config["size-height"] / 2 - $point["Y"],
-    );
-};
-
-//////////////////////////////////////////////////////////////////////////////
-
-function drawCross($im, $center, $size, $width, $color){
-    $size = $size / 2;
-    $width = $width / 2;
-    $cx = $center['X'];
-    $cy = $center['Y'];
-
-    $point1 = array('X'=>$cx-$size,'Y'=>$cy-$width);
-    $point2 = array('X'=>$cx+$size,'Y'=>$cy+$width);
-    imagefilledrectangle($im, $point1['X'], $point1['Y'], $point2['X'], $point2['Y'], $color);
-    $point1 = array('X'=>$cx-1,'Y'=>$cy-$size);
-    $point2 = array('X'=>$cx+1,'Y'=>$cy+$size);
-    imagefilledrectangle($im, $point1['X'], $point1['Y'], $point2['X'], $point2['Y'], $color);
-};
-
-//////////////////////////////////////////////////////////////////////////////
-
-$im = imagecreate($config["size-width"],$config["size-height"]); 
-
-//get color.
-$bg = imagecolorallocate($im,0,0,0); 
-$colors = array(
-    "red"=>imagecolorallocate($im,255,0,255), 
-    "white"=>imagecolorallocate($im,255,255,255),
-    "blue"=>imagecolorallocate($im, 0, 0, 255),
-);
 
 /*
 
@@ -98,21 +48,19 @@ imagestring($im,4,350,110,'XShaft',$white);
 imagefilledpolygon($im,$arrowX,3,$white); 
 imagefilledpolygon($im,$arrowY,3,$white); 
 */
+$projector = new projector(new geoPoint($config['center']['latitude'], $config['center']['longitude']), $config['r']);
+$map = new map($config['size-width'], $config['size-height']);
 
-$center = $config['center'];
 foreach($config["elements"] as $element){
-    $diff = project($center, array('latitude'=>$element['latitude'], 'longitude'=>$element['longitude']));
-    $point = toGraphCoordinates(array(
-        "X"=>0 + $diff['dX'],
-        "Y"=>0 + $diff['dY'],
-    ));
+    $geoPoint = new geoPoint($element['latitude'], $element['longitude']);
+    $mapPoint = $geoPoint->project($projector);
 
     if($element['type'] == 'label'){
-        imagestring($im, $element['size'], $point['X'], $point['Y'], $element['text'], $colors["white"]);
+        $map->write($mapPoint, $element['size'], $element['text'], $map->colors['white']);
     };
 
     if($element['type'] == 'cross'){
-        drawCross($im, $point, $element['size'], $element['width'], $colors["white"]);
+        $map->cross($mapPoint, $element['size'], $element['width'], $map->colors["white"]);
     };
 };
 
@@ -120,7 +68,5 @@ foreach($config["elements"] as $element){
 
 
 /****************************** Center Cross ********************************/
-drawCross($im, toGraphCoordinates(array('X'=>0, 'Y'=>0)), 16, 2, $colors['blue']);
-//////////////////////////////////////////////////////////////////////////////
-imagepng($im); 
-imagedestroy($im); 
+$map->cross(new mapPoint(0,0), 16, 2, $map->colors['blue']);
+$map->output();
