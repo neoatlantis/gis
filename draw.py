@@ -1,6 +1,48 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import os
+import subprocess
 
+center = (40.0, 119.0)
+diff = 5
+
+config = {
+    'size-width': 800,
+    'size-height': 600,
+    'r': 10000,
+    'center': {'latitude':center[0], 'longitude':center[1]},
+    'elements': [
+        {'type':'label', 'size':4, 'text':'Beijing', 'latitude':40.0, 'longitude': 119.0},
+        {'type':'label', 'size':4, 'text':'Tianjin', 'latitude':39.0, 'longitude': 120.0},
+    ]
+}
+
+command = ['python', 'cities1000.py', str(center[1]), str(diff), str(center[0]), str(diff)]
+found = subprocess.check_output(command)
+
+found = found.split('\n')
+
+elements = []
+for each in found:
+    split = each.split('\t')
+    if len(split) < 10: continue
+
+    city_names = split[3].split(',')
+    city_name = city_names[-1]
+
+    city_size = split[7]
+    if not city_size in ['PPLA3','PPLA2']: continue
+
+    size = 4
+    if city_size == 'PPLA2': 
+        size = 6
+
+    elements.append({'type':'label', 'size':size, 'text':city_name, 'latitude':float(split[4]), 'longitude':float(split[5])})
+
+config['elements'] = elements
+
+
+##############################################################################
 def convert(d):
     ret = ''
     if type(d) == dict:
@@ -18,18 +60,7 @@ def convert(d):
     else:
         ret = str(d)
     return ret
-
-config = convert({
-    'size-width': 800,
-    'size-height': 600,
-    'r': 1000,
-    'center': {'latitude':40.0, 'longitude':110.0},
-    'elements': [
-        {'type':'label', 'size':4, 'text':'Beijing', 'latitude':40.0, 'longitude': 119.0},
-        {'type':'label', 'size':4, 'text':'Tianjin', 'latitude':39.0, 'longitude': 120.0},
-    ]
-})
-
+config = convert(config)
 output = """<?php
 require(dirname(__FILE__) . '/php/plotter.php');
 
@@ -38,6 +69,5 @@ require(dirname(__FILE__) . '/php/do.php');""" % (config)
 
 open('____temp____.php', 'w+').write(output)
 
-import os
 os.system('php ____temp____.php > some.png')
 os.system('ristretto some.png')

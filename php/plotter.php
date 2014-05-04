@@ -81,6 +81,7 @@ class map{
     private $im;
     private $width;
     private $height;
+    private $fontfile;
 
     public $colors;
     
@@ -102,6 +103,7 @@ class map{
             "white"=>imagecolorallocate($this->im,255,255,255),
             "blue"=>imagecolorallocate($this->im, 0, 0, 255),
         );
+        $this->fontfile = dirname(__FILE__) . '/font.ttc';
     }
 
     public function output(){
@@ -125,11 +127,12 @@ class map{
 
     public function write($position, $size, $text, $color){
         $position = $this->_coord($position);
-        imagestring($this->im, $size, $position['x'], $position['y'], $text, $color);
+//        imagestring($this->im, $size, $position['x'], $position['y'], $text, $color);
+        imagettftext($this->im, $size + 6, 0, $position['x'], $position['y'], $color, $this->fontfile ,$text);
     }
 
     public function dot($position, $size, $color){
         $position = $this->_coord($position);
-        imagefilledarc($this->im, $position['x'], $position['y'], $size, $size, 0, 360, $size, IMG_ARC_PIE);
+        imagefilledarc($this->im, $position['x'], $position['y'], $size, $size, 0, 360, $color, IMG_ARC_PIE);
     }
 };
