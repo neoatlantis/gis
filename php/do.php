@@ -1,21 +1,46 @@
 <?php
-$projector = new projector(new geoPoint($config['center']['latitude'], $config['center']['longitude']), $config['r']);
-$map = new map($config['size-width'], $config['size-height']);
+$mapCenter = $mapR = $mapWidth = $mapHeight = null;
 
-foreach($config["elements"] as $element){
-    $geoPoint = new geoPoint($element['latitude'], $element['longitude']);
+$content = explode("\n", $content);
+$headRead = True;
+$contentMax = count($content);
+for($i=0; $i<$contentMax;$i++){
+    if(!$content[$i] = trim($content[$i])) break;
+    $split = explode("\t", $content[$i]);
+    
+    $cmd = $split[0];
+    if($headRead){
+        if('center' == $cmd)
+            $mapCenter = new geoPoint($split[1], $split[2]);
+        else if('r' == $cmd)
+            $mapR = $split[1];
+        else if('width' == $cmd)
+            $mapWidth = $split[1];
+        else if('height' == $cmd)
+            $mapHeight = $split[1];
+    };
+};
+
+$projector = new projector($mapCenter, $mapR);
+$map = new map($mapWidth, $mapHeight);
+
+for($i;$i<$contentMax;$i++){
+    if(!($content[$i] = trim($content[$i]))) continue;
+    $split = explode("\t", $content[$i]);
+    $cmd = $split[0];
+
+    $geoPoint = new geoPoint($split[1], $split[2]);
     $pos = $geoPoint->project($projector);
 
-    if($element['type'] == 'label'){
-        $map->dot($pos, $element['size'], $map->colors['red']);
-        $map->write($pos, 4, $element['text'], $map->colors['white']);
-    };
-
-    if($element['type'] == 'cross'){
-        $map->cross($pos, $element['size'], $element['width'], $map->colors["white"]);
-    };
-
-    if($element['type'] == 'cross-net'){
+    if('label' == $cmd){
+        // label Longitude Latitude Size Text
+//        var_dump($pos->x);
+        $map->dot($pos, $split[3], $map->colors['red']);
+        $map->write($pos, 4, $split[4], $map->colors['white']);
+    } else if('cross' == $cmd){
+        // cross Longitude Latitude Size Width
+        $map->cross($pos, $split[3], $split[4], $map->colors["white"]);
+    } /*else if('cross-net' == $cmd){
         $xstep = $element['x-step'];
         $ystep = $element['y-step'];
         $num = abs($element['n']);
@@ -26,7 +51,8 @@ foreach($config["elements"] as $element){
                 $map->cross($pos, $element['size'], $element['width'], $map->colors['white']);
             };
         };
-    };
+    };*/
+
 };
 
 

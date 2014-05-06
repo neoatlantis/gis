@@ -6,7 +6,7 @@ import os
 
 import _gis_
 
-borderN, borderS, borderL = _gis_.parseArgvAsRegion()
+region = _gis_.parseArgvAsRegion()
 
 ##############################################################################
 
@@ -23,14 +23,12 @@ while True:
     
     latitude, longitude = float(lineSplit[4]), float(lineSplit[5])
 
-    # compare latitude
-    if not (borderS < latitude and latitude < borderN): continue
-    # compare longitude
-    inner = False
-    for borderW, borderE in borderL:
-        if borderW <= longitude and longitude <= borderE:
-            inner = True
-            break
-    if not inner: continue
+    if not _gis_.within(region, (longitude, latitude)):
+        continue
 
-    print '\t'.join(lineSplit)
+    cityName = lineSplit[2]
+    cityLat = lineSplit[4]
+    cityLng = lineSplit[5]
+    cityRole = lineSplit[7]
+
+    print '\t'.join(['label', cityLng, cityLat, '5', cityName])

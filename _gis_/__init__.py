@@ -1,4 +1,5 @@
 import sys
+import subprocess
 
 def parseArgvAsRegion():
     if len(sys.argv) < 5:
@@ -25,5 +26,18 @@ def parseArgvAsRegion():
     elif borderW < -180:
         borderL.append((-180.0, borderE))
         borderL.append((borderW + 360, 180.0))
-
     return borderN, borderS, borderL
+
+def within(borders, point):
+    lng, lat = point
+    borderN, borderS, borderL = borders
+    if not (borderS <= lat and lat <= borderN):
+        return False
+    for borderW, borderE in borderL:
+        if borderW <= lng and lng <= borderE:
+            return True
+    return False
+
+def checkPythonOutput(name, center, diff):
+    command = ['python', name + '.py', str(center[0]), str(diff), str(center[1]), str(diff)]
+    return subprocess.check_output(command)

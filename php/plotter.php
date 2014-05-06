@@ -30,7 +30,7 @@ imagefilledpolygon($im,$arrowY,3,$white);
 class geoPoint{
     public $lat;
     public $lng;
-    public function __construct($lat, $lng){
+    public function __construct($lng, $lat){
         $this->lat = $lat;
         $this->lng = $lng;
     }
