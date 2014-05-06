@@ -102,6 +102,7 @@ class map{
             "red"=>imagecolorallocate($this->im,255,0,0), 
             "white"=>imagecolorallocate($this->im,255,255,255),
             "blue"=>imagecolorallocate($this->im, 0, 0, 255),
+            "yellow"=>imagecolorallocate($this->im, 255, 255, 0),
         );
         $this->fontfile = dirname(__FILE__) . '/font.ttc';
     }
@@ -156,14 +157,14 @@ class marker{
 
     public function city($pos, $size, $text){
         $this->map->dot($pos, $size, $this->map->colors['red']);
-#        $this->map->write($pos, $size + 16, $text, $this->map->colors['white']);
+        $this->map->write($pos, $size + 2, $text, $this->map->colors['white']);
     }
 
     public function coastline($posAry){
         $lastPos = $posAry[0];
         for($i=1; $i<count($posAry); $i++){
             $newPos = $posAry[$i];
-            $this->map->line($lastPos, $newPos, $this->map->colors["red"]);
+            $this->map->line($lastPos, $newPos, $this->map->colors["yellow"]);
             $lastPos = $newPos;
         };
     }
