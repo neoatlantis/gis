@@ -14,6 +14,19 @@ foreach($config["elements"] as $element){
     if($element['type'] == 'cross'){
         $map->cross($pos, $element['size'], $element['width'], $map->colors["white"]);
     };
+
+    if($element['type'] == 'cross-net'){
+        $xstep = $element['x-step'];
+        $ystep = $element['y-step'];
+        $num = abs($element['n']);
+        for($i=-$num;$i<=$num;$i++){
+            for($j=-$num;$j<=$num;$j++){
+                $geopos = new geoPoint($element['latitude'] + $i * $ystep, $element['longitude'] + $j * $xstep);
+                $pos = $geopos->project($projector);
+                $map->cross($pos, $element['size'], $element['width'], $map->colors['white']);
+            };
+        };
+    };
 };
 
 

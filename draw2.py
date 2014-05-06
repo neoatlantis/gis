@@ -3,45 +3,36 @@
 import os
 import subprocess
 
-center = (39.9075 + 0.5/60*20, 116.39)
-diff = 0.5 / 60 * 100
-netdiff = 0.5 / 60 * 10
+import shapefile
 
+centerLat = 0
+centerLng = 0
+
+load = ['coastline']
+
+loaded = {}
+for each in load:
+    loaded[each] = shapefile.Reader('data/ne_10m/ne_10m_%s' % each)
+
+points = []
+x = loaded['coastline'].shapes()
+for i in xrange(0, 40):
+    points += x[i].points
+
+elements = []
+for x,y in points:
+    elements.append({'type':'cross', 'size':1, 'width':0.5, 'latitude':y, 'longitude':x})
+    centerLat += y
+    centerLng += x
+
+center = (centerLat / len(elements), centerLng / len(elements))
 config = {
     'size-width': 800,
     'size-height': 600,
-    'r': 50000,
+    'r': 200,
     'center': {'latitude':center[0], 'longitude':center[1]},
-    'elements': [
-        {'type':"cross-net", "size":14, "width":1, "latitude":center[0], "longitude":center[1], 'x-step':netdiff, 'y-step':netdiff, 'n':10}
-    ]
+    'elements': elements
 }
-
-command = ['python', 'cities1000.py', str(center[1]), str(diff), str(center[0]), str(diff)]
-found = subprocess.check_output(command)
-
-found = found.split('\n')
-
-elements = []
-for each in found:
-    split = each.split('\t')
-    if len(split) < 10: continue
-
-    city_names = split[3].split(',')
-    city_name = split[2] 
-#    city_name = city_names[-1]
-
-    city_size = split[7]
-#    if not city_size in ['PPLA3','PPLA2']: continue
-
-    size = 4
-    if city_size == 'PPLC': 
-        size = 12
-
-    elements.append({'type':'label', 'size':size, 'text':city_name, 'latitude':float(split[4]), 'longitude':float(split[5])})
-
-config['elements'] += elements
-
 
 ##############################################################################
 def convert(d):
@@ -72,5 +63,3 @@ open('____temp____.php', 'w+').write(output)
 
 os.system('php ____temp____.php > some.png')
 os.system('ristretto some.png')
-os.remove('____temp____.php')
-os.remove('some.png')
