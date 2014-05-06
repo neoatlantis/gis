@@ -142,6 +142,17 @@ class map{
         $point2 = $this->_coord($pos2);
         imageline($this->im, $point1['x'], $point1['y'], $point2['x'], $point2['y'], $color);
     }
+
+    public function polygon($posAry, $color){
+        $count = count($posAry);
+        $inputAry = Array();
+        for($i=0; $i<$count; $i++){
+            $pos = $this->_coord($posAry[$i]);
+            $inputAry[] = $pos['x'];
+            $inputAry[] = $pos['y'];
+        };
+        imagefilledpolygon($this->im, $inputAry, $count, $color);
+    }
 };
 
 
@@ -155,18 +166,32 @@ class marker{
         $this->map = $map;
     }
 
+    private function _line($posAry, $color){
+        $lastPos = $posAry[0];
+        for($i=1; $i<count($posAry); $i++){
+            $newPos = $posAry[$i];
+            $this->map->line($lastPos, $newPos, $color);
+            $lastPos = $newPos;
+        };
+    }
+
     public function city($pos, $size, $text){
         $this->map->dot($pos, $size, $this->map->colors['red']);
         $this->map->write($pos, $size + 2, $text, $this->map->colors['white']);
     }
 
     public function coastline($posAry){
-        $lastPos = $posAry[0];
-        for($i=1; $i<count($posAry); $i++){
-            $newPos = $posAry[$i];
-            $this->map->line($lastPos, $newPos, $this->map->colors["yellow"]);
-            $lastPos = $newPos;
-        };
+        $this->_line($posAry, $this->map->colors["yellow"]);
+    }
+
+    public function bathymetry($posAry, $deepth){
+#        $this->_line($posAry, $this->map->colors["blue"]);
+        $this->map->polygon($posAry, $this->map->colors['blue']);
+    }
+
+    public function lake($posAry){
+#        $this->_line($posAry, $this->map->colors["blue"]);
+        $this->map->polygon($posAry, $this->map->colors['blue']);
     }
 
     public function finish(){

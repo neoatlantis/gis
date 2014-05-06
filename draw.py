@@ -4,7 +4,7 @@ import os
 import subprocess
 import _gis_
 
-center = (126.39, 39.9075)
+center = (126.39, 39.9075 - 10)
 diff = 0.5 / 60 * 1000
 netdiff = 0.5 / 60 * 10
 
