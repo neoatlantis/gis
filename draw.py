@@ -5,7 +5,7 @@ import subprocess
 import _gis_
 
 center = (126.39, 39.9075 + 0.5/60*20)
-diff = 0.5 / 60 * 1000
+diff = 0.5 / 60 * 3000
 netdiff = 0.5 / 60 * 10
 
 width = 800

@@ -23,6 +23,7 @@ for($i=0; $i<$contentMax;$i++){
 
 $projector = new projector($mapCenter, $mapR);
 $map = new map($mapWidth, $mapHeight);
+$marker = new marker($map);
 
 for($i;$i<$contentMax;$i++){
     if(!($content[$i] = trim($content[$i]))) continue;
@@ -32,22 +33,24 @@ for($i;$i<$contentMax;$i++){
     $geoPoint = new geoPoint($split[1], $split[2]);
     $pos = $geoPoint->project($projector);
 
-    if('label' == $cmd){
+    if('city' == $cmd){
         // label Longitude Latitude Size Text
-//        var_dump($pos->x);
-        $map->dot($pos, $split[3], $map->colors['red']);
-        $map->write($pos, 4, $split[4], $map->colors['white']);
+        $marker->city(
+            $pos,
+            $split[3],
+            $split[4]
+        );
     } else if('cross' == $cmd){
         // cross Longitude Latitude Size Width
         $map->cross($pos, $split[3], $split[4], $map->colors["white"]);
-    } else if('line' == $cmd){
-        $lastPointProjected = $pos;
+    } else if('coastline' == $cmd){
+        $ary = Array($pos);
         for($j=3; $j<count($split); $j+=2){
             $newPoint = new geoPoint($split[$j], $split[$j+1]);
             $newPointProjected = $newPoint->project($projector);
-            $map->line($lastPointProjected, $newPointProjected, $map->colors["red"]);
-            $lastPointProjected = $newPointProjected;
+            $ary[] = $newPointProjected;
         };
+        $marker->coastline($ary);
     }
     /*else if('cross-net' == $cmd){
         $xstep = $element['x-step'];
@@ -68,5 +71,4 @@ for($i;$i<$contentMax;$i++){
 
 
 /****************************** Center Cross ********************************/
-$map->cross(new mapPoint(0,0), 16, 2, $map->colors['blue']);
-$map->output();
+$marker->finish();

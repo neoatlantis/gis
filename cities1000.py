@@ -31,4 +31,4 @@ while True:
     cityLng = lineSplit[5]
     cityRole = lineSplit[7]
 
-    print '\t'.join(['label', cityLng, cityLat, '5', cityName])
+    print '\t'.join(['city', cityLng, cityLat, '5', cityName])

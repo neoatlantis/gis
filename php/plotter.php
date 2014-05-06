@@ -142,3 +142,34 @@ class map{
         imageline($this->im, $point1['x'], $point1['y'], $point2['x'], $point2['y'], $color);
     }
 };
+
+
+/*
+ * Takes a map and commands, to plot on a map like a man.
+ * Decides colors and other options.
+ */
+class marker{
+    private $map;
+    public function __construct($map){
+        $this->map = $map;
+    }
+
+    public function city($pos, $size, $text){
+        $this->map->dot($pos, $size, $this->map->colors['red']);
+#        $this->map->write($pos, $size + 16, $text, $this->map->colors['white']);
+    }
+
+    public function coastline($posAry){
+        $lastPos = $posAry[0];
+        for($i=1; $i<count($posAry); $i++){
+            $newPos = $posAry[$i];
+            $this->map->line($lastPos, $newPos, $this->map->colors["red"]);
+            $lastPos = $newPos;
+        };
+    }
+
+    public function finish(){
+        $this->map->cross(new mapPoint(0,0), 16, 2, $this->map->colors['blue']);
+        $this->map->output();
+    }
+};

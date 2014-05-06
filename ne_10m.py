@@ -19,4 +19,4 @@ for each in x:
             use = True
             break
     if use:
-        print 'line\t' + '\t'.join(['%f\t%f' % (lng, lat) for lng, lat in points])
+        print 'coastline\t' + '\t'.join(['%f\t%f' % (lng, lat) for lng, lat in points])
