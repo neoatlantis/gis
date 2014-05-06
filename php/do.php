@@ -40,7 +40,16 @@ for($i;$i<$contentMax;$i++){
     } else if('cross' == $cmd){
         // cross Longitude Latitude Size Width
         $map->cross($pos, $split[3], $split[4], $map->colors["white"]);
-    } /*else if('cross-net' == $cmd){
+    } else if('line' == $cmd){
+        $lastPointProjected = $pos;
+        for($j=3; $j<count($split); $j+=2){
+            $newPoint = new geoPoint($split[$j], $split[$j+1]);
+            $newPointProjected = $newPoint->project($projector);
+            $map->line($lastPointProjected, $newPointProjected, $map->colors["red"]);
+            $lastPointProjected = $newPointProjected;
+        };
+    }
+    /*else if('cross-net' == $cmd){
         $xstep = $element['x-step'];
         $ystep = $element['y-step'];
         $num = abs($element['n']);

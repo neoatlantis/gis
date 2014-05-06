@@ -135,4 +135,10 @@ class map{
         $position = $this->_coord($position);
         imagefilledarc($this->im, $position['x'], $position['y'], $size, $size, 0, 360, $color, IMG_ARC_PIE);
     }
+
+    public function line($pos1, $pos2, $color){
+        $point1 = $this->_coord($pos1);
+        $point2 = $this->_coord($pos2);
+        imageline($this->im, $point1['x'], $point1['y'], $point2['x'], $point2['y'], $color);
+    }
 };
