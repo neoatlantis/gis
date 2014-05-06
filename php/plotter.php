@@ -102,6 +102,7 @@ class map{
             "red"=>imagecolorallocate($this->im,255,0,0), 
             "white"=>imagecolorallocate($this->im,255,255,255),
             "blue"=>imagecolorallocate($this->im, 0, 0, 255),
+            "light-blue"=>imagecolorallocate($this->im, 0, 128, 255),
             "yellow"=>imagecolorallocate($this->im, 255, 255, 0),
         );
         $this->fontfile = dirname(__FILE__) . '/font.ttc';
@@ -191,7 +192,7 @@ class marker{
 
     public function lake($posAry){
 #        $this->_line($posAry, $this->map->colors["blue"]);
-        $this->map->polygon($posAry, $this->map->colors['blue']);
+        $this->map->polygon($posAry, $this->map->colors['light-blue']);
     }
 
     public function finish(){

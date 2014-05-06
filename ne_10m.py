@@ -4,7 +4,7 @@ import shapefile
 
 region = _gis_.parseArgvAsRegion()
 
-load = ['coastline', 'bathymetry_K_200', 'lakes']
+load = ['coastline', 'lakes', 'minor_islands_coastline']
 
 loaded = {}
 for each in load:
@@ -23,5 +23,6 @@ def showLines(shapes, name):
             print name + '\t' + '\t'.join(['%f\t%f' % (lng, lat) for lng, lat in points])
 
 showLines(loaded['coastline'].shapes(), 'coastline')
-showLines(loaded['bathymetry_K_200'].shapes(), 'bathymetry200')
+showLines(loaded['minor_islands_coastline'].shapes(), 'coastline')
+#showLines(loaded['bathymetry_K_200'].shapes(), 'bathymetry200')
 showLines(loaded['lakes'].shapes(), 'lake')

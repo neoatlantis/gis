@@ -4,13 +4,13 @@ import os
 import subprocess
 import _gis_
 
-center = (126.39, 39.9075 - 10)
-diff = 0.5 / 60 * 1000
+center = (116.39, 39.9075 - 10)
+diff = 0.5 / 60 * 2000
 netdiff = 0.5 / 60 * 10
 
 width = 800
 height = 600
-r = 3000
+r = 1000
 
 #{'type':"cross-net", "size":14, "width":1, "latitude":center[0], "longitude":center[1], 'x-step':netdiff, 'y-step':netdiff, 'n':10}
 
